@@ -63,7 +63,7 @@ let syncStatusTimer: number | undefined
 let nextNoteZIndex = 1
 
 type GoogleTokenClient = {
-  requestAccessToken: () => void
+  requestAccessToken: (overrideConfig?: { prompt?: string }) => void
 }
 
 type GoogleApi = {
@@ -117,6 +117,30 @@ const setSyncStatus = (message: string, hideAfterMs = 0) => {
   }
 }
 
+const requestGoogleAccessToken = (prompt?: string) => {
+  if (!clientId || !window.google) {
+    signInButton.textContent = 'Setup required'
+    return
+  }
+
+  const tokenClient = window.google.accounts.oauth2.initTokenClient({
+    client_id: clientId,
+    scope: 'https://www.googleapis.com/auth/drive.file',
+    callback: (response) => {
+      if (response.access_token) {
+        accessToken = response.access_token
+        setDriveConnected(false)
+        updateAuthButton()
+        void loadFromDrive()
+      } else if (response.error && prompt !== '') {
+        setSyncStatus('Failed', 7000)
+      }
+    },
+  })
+
+  tokenClient.requestAccessToken(prompt === undefined ? undefined : { prompt })
+}
+
 signInButton.addEventListener('click', async () => {
   if (accessToken) {
     window.clearTimeout(driveSaveTimer)
@@ -137,32 +161,16 @@ signInButton.addEventListener('click', async () => {
     return
   }
 
-  if (!clientId || !window.google) {
-    signInButton.textContent = 'Setup required'
-    return
-  }
-
-  const tokenClient = window.google.accounts.oauth2.initTokenClient({
-    client_id: clientId,
-    scope: 'https://www.googleapis.com/auth/drive.file',
-    callback: (response) => {
-      if (response.access_token) {
-        accessToken = response.access_token
-        setDriveConnected(false)
-        updateAuthButton()
-        void loadFromDrive()
-      } else if (response.error) {
-        setSyncStatus('Failed', 7000)
-      }
-    },
-  })
-
-  tokenClient.requestAccessToken()
+  requestGoogleAccessToken()
 })
 
 updateAuthButton()
 setEditingEnabled(false)
 setSyncStatus('')
+
+window.addEventListener('load', () => {
+  if (!accessToken) requestGoogleAccessToken('')
+})
 
 const updateCanvasPosition = () => {
   canvasContent.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`
