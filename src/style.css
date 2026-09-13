@@ -1,0 +1,358 @@
+:root {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #e8eaf0;
+  background: #111318;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background: #111318;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 58px;
+  padding: 0 18px;
+  border-bottom: 1px solid #292d36;
+  background: #181a20;
+}
+
+.brand,
+.toolbar-actions {
+  display: flex;
+  align-items: center;
+}
+
+.brand {
+  gap: 10px;
+  color: #f2f3f6;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+
+.brand-mark {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e5a85d;
+  box-shadow: 0 0 14px rgba(229, 168, 93, 0.45);
+}
+
+.toolbar-actions {
+  gap: 6px;
+}
+
+.toolbar-button {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #a8adb9;
+  background: transparent;
+  cursor: pointer;
+}
+
+.toolbar-button:hover {
+  border-color: #3a3f4b;
+  color: #f2f3f6;
+  background: #242730;
+}
+
+.toolbar-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.toolbar-button:disabled:hover {
+  border-color: transparent;
+  color: #a8adb9;
+  background: transparent;
+}
+
+.account-button {
+  height: 36px;
+  width: 76px;
+  padding: 0 10px;
+  border: 1px solid #3a3f4b;
+  border-radius: 6px;
+  color: #c5c9d3;
+  background: #20232a;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.account-button:hover,
+.account-button.is-signed-in {
+  border-color: #6a5238;
+  color: #f0c39a;
+  background: #35291d;
+}
+
+.sync-status {
+  width: 145px;
+  overflow: hidden;
+  color: #858b99;
+  font-size: 11px;
+  line-height: 36px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: right;
+}
+
+@media (max-width: 600px) {
+  .toolbar {
+    padding: 0 12px;
+  }
+
+  .brand > span:last-child {
+    display: none;
+  }
+
+  .toolbar-actions {
+    gap: 4px;
+  }
+
+  .sync-status {
+    width: 110px;
+  }
+}
+
+#add-note {
+  width: 36px;
+  height: 36px;
+  border-color: #4a3d2e;
+  border-radius: 8px;
+  color: #e5a85d;
+  background: #35291d;
+  font-size: 20px;
+  line-height: 1;
+  padding-bottom: 2px;
+}
+
+#add-note:hover {
+  border-color: #6a5238;
+  color: #f0c39a;
+  background: #35291d;
+}
+
+.workspace {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+  background: #111318;
+  cursor: grab;
+  touch-action: none;
+}
+
+.workspace.is-dragging {
+  cursor: grabbing;
+}
+
+.canvas-content {
+  position: absolute;
+  inset: 0;
+  transform-origin: 0 0;
+}
+
+.notes {
+  position: absolute;
+  inset: 0;
+}
+
+.note {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: 220px;
+  height: 150px;
+  overflow: hidden;
+  border: 1px solid #4a4033;
+  border-radius: 8px;
+  background: #29251f;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+}
+
+.note-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
+  padding: 0 8px;
+  border-bottom: 1px solid #40382f;
+  color: #9d8b75;
+  cursor: grab;
+  user-select: none;
+}
+
+.note-header:active {
+  cursor: grabbing;
+}
+
+.note-grip {
+  font-size: 13px;
+  letter-spacing: -3px;
+}
+
+.note-delete {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  color: #a99f93;
+  background: transparent;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.note-delete:hover {
+  color: #f0c39a;
+  background: #413329;
+}
+
+.note-delete:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.notes.is-read-only .note-header {
+  cursor: default;
+}
+
+.notes.is-read-only .note-resize-handle {
+  pointer-events: none;
+}
+
+.note textarea {
+  flex: 1;
+  width: 100%;
+  padding: 12px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  color: #eee5d8;
+  background: transparent;
+  font: inherit;
+  font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.note textarea::placeholder {
+  color: #9d917f;
+}
+
+.note textarea:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.note-resize-handle {
+  position: absolute;
+  z-index: 1;
+  background: transparent;
+}
+
+.note-resize-top,
+.note-resize-bottom {
+  left: 8px;
+  right: 8px;
+  height: 6px;
+  cursor: ns-resize;
+}
+
+.note-resize-top {
+  top: -3px;
+}
+
+.note-resize-bottom {
+  bottom: -3px;
+}
+
+.note-resize-left,
+.note-resize-right {
+  top: 8px;
+  bottom: 8px;
+  width: 6px;
+  cursor: ew-resize;
+}
+
+.note-resize-left {
+  left: -3px;
+}
+
+.note-resize-right {
+  right: -3px;
+}
+
+.note-resize-top-left,
+.note-resize-top-right,
+.note-resize-bottom-right,
+.note-resize-bottom-left {
+  width: 12px;
+  height: 12px;
+}
+
+.note-resize-top-left {
+  top: -3px;
+  left: -3px;
+  cursor: nwse-resize;
+}
+
+.note-resize-top-right {
+  top: -3px;
+  right: -3px;
+  cursor: nesw-resize;
+}
+
+.note-resize-bottom-right {
+  right: -3px;
+  bottom: -3px;
+  cursor: nwse-resize;
+}
+
+.note-resize-bottom-left {
+  bottom: -3px;
+  left: -3px;
+  cursor: nesw-resize;
+}
+
+.canvas-grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+  background-image: linear-gradient(#292d36 1px, transparent 1px),
+    linear-gradient(90deg, #292d36 1px, transparent 1px);
+  background-position: center;
+  background-size: 36px 36px;
+  mask-image: radial-gradient(ellipse at center, black, transparent 75%);
+}
+
