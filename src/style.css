@@ -48,11 +48,12 @@ button {
 
 .brand {
   gap: 8px;
-  min-width: 0;
+  flex: 0 0 auto;
   color: #cccccc;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
 .brand-mark {
@@ -63,7 +64,7 @@ button {
 
 .toolbar-actions {
   gap: 6px;
-  min-width: 0;
+  flex: 0 0 auto;
 }
 
 .toolbar-button {
