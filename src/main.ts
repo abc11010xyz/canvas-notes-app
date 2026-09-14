@@ -226,7 +226,6 @@ const markUnsaved = () => {
 
   isDirty = true
   updateAuthButton()
-  setSyncStatus('Unsaved changes')
 }
 
 workspace.addEventListener('pointerdown', (event) => {
@@ -317,7 +316,6 @@ const saveState = () => {
       localStorage.setItem(storageKey, JSON.stringify(state))
       isDirty = true
       updateAuthButton()
-      setSyncStatus('Unsaved changes')
     } catch {
       setSyncStatus('Failed', 7000)
     }
@@ -419,7 +417,6 @@ const loadFromDrive = async () => {
         localState.notes?.forEach((savedNote) => createNote(savedNote.x, savedNote.y, savedNote, false))
         isDirty = true
         setDriveConnected(true)
-        setSyncStatus('Unsaved changes')
       } else {
         isDirty = false
         setDriveConnected(true)
@@ -446,7 +443,6 @@ const loadFromDrive = async () => {
     if (stateToUse === localState) {
       isDirty = true
       setDriveConnected(true)
-      setSyncStatus('Unsaved changes')
     } else {
       try {
         localStorage.setItem(storageKey, JSON.stringify(state))
