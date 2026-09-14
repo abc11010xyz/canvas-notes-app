@@ -27,6 +27,7 @@ const canvasContent = document.querySelector<HTMLElement>('.canvas-content')!
 const notes = document.querySelector<HTMLElement>('.notes')!
 const addNoteButton = document.querySelector<HTMLButtonElement>('#add-note')!
 const storageKey = 'canvas-notes-state'
+const explicitLogoutKey = 'canvas-notes-explicit-logout'
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const signInButton = document.querySelector<HTMLButtonElement>('#google-sign-in')!
 const syncStatus = document.querySelector<HTMLElement>('#sync-status')!
@@ -123,11 +124,16 @@ const requestGoogleAccessToken = (prompt?: string) => {
     return
   }
 
+  if (prompt !== '') {
+    localStorage.removeItem(explicitLogoutKey)
+  }
+
   const tokenClient = window.google.accounts.oauth2.initTokenClient({
     client_id: clientId,
     scope: 'https://www.googleapis.com/auth/drive.file',
     callback: (response) => {
       if (response.access_token) {
+        localStorage.removeItem(explicitLogoutKey)
         accessToken = response.access_token
         setDriveConnected(false)
         updateAuthButton()
@@ -155,6 +161,7 @@ signInButton.addEventListener('click', async () => {
     driveFileId = null
     notes.replaceChildren()
     localStorage.removeItem(storageKey)
+    localStorage.setItem(explicitLogoutKey, 'true')
     window.google?.accounts.oauth2.revoke(token, updateAuthButton)
     updateAuthButton()
     setSyncStatus('')
@@ -169,7 +176,9 @@ setEditingEnabled(false)
 setSyncStatus('')
 
 window.addEventListener('load', () => {
-  if (!accessToken) requestGoogleAccessToken('')
+  if (!accessToken && localStorage.getItem(explicitLogoutKey) !== 'true') {
+    requestGoogleAccessToken('')
+  }
 })
 
 const updateCanvasPosition = () => {
