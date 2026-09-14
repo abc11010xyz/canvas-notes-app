@@ -93,6 +93,7 @@ const updateAuthButton = () => {
   signInButton.classList.toggle('is-signed-in', Boolean(accessToken))
   addNoteButton.disabled = !accessToken || !driveConnected
   saveButton.disabled = !accessToken || !driveConnected || !isDirty
+  saveButton.textContent = isDirty ? 'Save *' : 'Save'
 }
 
 const setEditingEnabled = (enabled: boolean) => {
@@ -219,6 +220,14 @@ const updateCanvasPosition = () => {
   canvasContent.style.transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`
 }
 
+const markUnsaved = () => {
+  if (!accessToken) return
+
+  isDirty = true
+  updateAuthButton()
+  setSyncStatus('Unsaved changes')
+}
+
 workspace.addEventListener('pointerdown', (event) => {
   if (event.button !== 1) return
 
@@ -256,6 +265,7 @@ workspace.addEventListener(
     zoom = nextZoom
     updateCanvasPosition()
     saveState()
+    markUnsaved()
   },
   { passive: false },
 )
@@ -270,6 +280,7 @@ const stopDragging = (event: PointerEvent) => {
   }
   workspace.classList.remove('is-dragging')
   saveState()
+  markUnsaved()
 }
 
 workspace.addEventListener('pointerup', stopDragging)
