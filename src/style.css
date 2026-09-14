@@ -31,9 +31,9 @@ button {
 }
 
 .toolbar {
+  position: relative;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   height: 58px;
   padding: 0 16px;
   border-bottom: 1px solid #333333;
@@ -47,6 +47,8 @@ button {
 }
 
 .brand {
+  position: absolute;
+  left: 16px;
   gap: 8px;
   flex: 0 0 auto;
   color: #cccccc;
@@ -63,6 +65,8 @@ button {
 }
 
 .toolbar-actions {
+  position: absolute;
+  right: 16px;
   gap: 6px;
   flex: 0 0 auto;
 }
@@ -159,12 +163,14 @@ button {
   }
 
   .brand {
+    left: 12px;
     gap: 8px;
     min-width: 0;
     font-size: 14px;
   }
 
   .toolbar-actions {
+    right: 12px;
     gap: 6px;
     min-width: 0;
   }
