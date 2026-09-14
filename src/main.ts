@@ -120,11 +120,13 @@ const setSyncStatus = (message: string, hideAfterMs = 0) => {
   window.clearTimeout(syncStatusTimer)
   syncStatus.textContent = message
   syncStatus.classList.toggle('is-visible', Boolean(message))
+  syncStatus.classList.toggle('is-saving', message === 'Saving...')
   syncStatus.classList.toggle('is-unsaved', message === 'Unsaved changes')
   if (hideAfterMs > 0) {
     syncStatusTimer = window.setTimeout(() => {
       syncStatus.textContent = ''
       syncStatus.classList.remove('is-visible')
+      syncStatus.classList.remove('is-saving')
       syncStatus.classList.remove('is-unsaved')
     }, hideAfterMs)
   }

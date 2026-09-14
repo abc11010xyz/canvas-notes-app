@@ -180,6 +180,25 @@ button {
   visibility: visible;
 }
 
+.sync-status.is-saving::before {
+  display: inline-block;
+  width: 11px;
+  height: 11px;
+  margin-right: 6px;
+  border: 2px solid #4d4d4d;
+  border-top-color: #4fc1ff;
+  border-radius: 50%;
+  content: '';
+  vertical-align: -2px;
+  animation: sync-spin 700ms linear infinite;
+}
+
+@keyframes sync-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .sync-status.is-unsaved {
   color: #4fc1ff;
 }
