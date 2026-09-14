@@ -158,19 +158,13 @@ button {
 }
 
 @media (max-width: 600px) {
-  .toolbar {
-    padding: 0 12px;
-  }
-
   .brand {
-    left: 12px;
     gap: 8px;
     min-width: 0;
     font-size: 14px;
   }
 
   .toolbar-actions {
-    right: 12px;
     gap: 6px;
     min-width: 0;
   }
