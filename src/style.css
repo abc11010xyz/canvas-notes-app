@@ -47,22 +47,22 @@ button {
 }
 
 .brand {
-  gap: 7px;
+  gap: 8px;
   min-width: 0;
   color: #cccccc;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
 
 .brand-mark {
-  width: 24px;
-  height: 24px;
-  flex: 0 0 24px;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 26px;
 }
 
 .toolbar-actions {
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 
@@ -98,8 +98,8 @@ button {
 
 .account-button {
   height: 36px;
-  width: 76px;
-  padding: 0 10px;
+  width: 64px;
+  padding: 0 6px;
   border: 1px solid #4d4d4d;
   border-radius: 3px;
   color: #cccccc;
@@ -110,7 +110,7 @@ button {
 
 .save-button {
   height: 36px;
-  padding: 0 12px;
+  padding: 0 8px;
   border: 1px solid #4d4d4d;
   border-radius: 3px;
   color: #cccccc;
@@ -138,7 +138,7 @@ button {
 }
 
 .sync-status {
-  width: 145px;
+  width: 78px;
   overflow: hidden;
   color: #858585;
   font-size: 11px;
@@ -158,9 +158,9 @@ button {
   }
 
   .brand {
-    gap: 7px;
+    gap: 8px;
     min-width: 0;
-    font-size: 13px;
+    font-size: 14px;
   }
 
   .toolbar-actions {
