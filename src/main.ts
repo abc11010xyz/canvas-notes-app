@@ -94,7 +94,10 @@ const updateAuthButton = () => {
   signInButton.classList.toggle('is-signed-in', Boolean(accessToken))
   addNoteButton.disabled = !accessToken || !driveConnected
   saveButton.disabled = !accessToken || !driveConnected || !isDirty
-  saveButton.textContent = isDirty ? 'Save *' : 'Save'
+  saveButton.textContent = 'Save'
+  saveButton.classList.toggle('is-dirty', isDirty)
+  saveButton.title = isDirty ? 'Unsaved changes' : 'Save notes'
+  saveButton.setAttribute('aria-label', isDirty ? 'Save unsaved changes' : 'Save notes')
 }
 
 const setEditingEnabled = (enabled: boolean) => {

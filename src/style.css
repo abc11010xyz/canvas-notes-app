@@ -131,6 +131,16 @@ button {
   background: #094771;
 }
 
+.save-button.is-dirty {
+  border-color: #007acc;
+  color: #ffffff;
+  background: #094771;
+}
+
+.save-button.is-dirty:hover {
+  background: #0e639c;
+}
+
 .save-button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
