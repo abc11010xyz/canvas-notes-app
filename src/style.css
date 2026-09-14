@@ -55,11 +55,9 @@ button {
 }
 
 .brand-mark {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #007acc;
-  box-shadow: 0 0 14px rgba(0, 122, 204, 0.4);
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
 }
 
 .toolbar-actions {

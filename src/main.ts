@@ -4,7 +4,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
 <main class="app-shell">
   <header class="toolbar">
     <div class="brand">
-      <span class="brand-mark" aria-hidden="true"></span>
+      <img class="brand-mark" src="./logo.svg" alt="" aria-hidden="true">
       <span>Canvas Notes</span>
     </div>
     <div class="toolbar-actions">
