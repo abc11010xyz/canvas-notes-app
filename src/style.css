@@ -35,7 +35,7 @@ button {
   align-items: center;
   justify-content: space-between;
   height: 58px;
-  padding: 0 18px;
+  padding: 0 16px;
   border-bottom: 1px solid #333333;
   background: #252526;
 }
@@ -62,7 +62,7 @@ button {
 }
 
 .toolbar-actions {
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
 }
 
@@ -164,7 +164,7 @@ button {
   }
 
   .toolbar-actions {
-    gap: 4px;
+    gap: 6px;
     min-width: 0;
   }
 
