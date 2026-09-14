@@ -47,9 +47,10 @@ button {
 }
 
 .brand {
-  gap: 10px;
+  gap: 7px;
+  min-width: 0;
   color: #cccccc;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.2px;
 }
@@ -62,6 +63,7 @@ button {
 
 .toolbar-actions {
   gap: 6px;
+  min-width: 0;
 }
 
 .toolbar-button {
