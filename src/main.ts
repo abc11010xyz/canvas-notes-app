@@ -93,7 +93,6 @@ const updateAuthButton = () => {
   signInButton.classList.toggle('is-signed-in', Boolean(accessToken))
   addNoteButton.disabled = !accessToken || !driveConnected
   saveButton.disabled = !accessToken || !driveConnected || !isDirty
-  saveButton.textContent = isDirty ? 'Save *' : 'Save'
 }
 
 const setEditingEnabled = (enabled: boolean) => {
@@ -115,11 +114,9 @@ const setDriveConnected = (connected: boolean) => {
 const setSyncStatus = (message: string, hideAfterMs = 0) => {
   window.clearTimeout(syncStatusTimer)
   syncStatus.textContent = message
-  syncStatus.classList.toggle('is-unsaved', message === 'Unsaved changes')
   if (hideAfterMs > 0) {
     syncStatusTimer = window.setTimeout(() => {
       syncStatus.textContent = ''
-      syncStatus.classList.remove('is-unsaved')
     }, hideAfterMs)
   }
 }

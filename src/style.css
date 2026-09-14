@@ -147,10 +147,6 @@ button {
   text-align: right;
 }
 
-.sync-status.is-unsaved {
-  color: #e5a85d;
-}
-
 @media (max-width: 600px) {
   .toolbar {
     padding: 0 12px;
@@ -185,10 +181,6 @@ button {
   border-color: #6a5238;
   color: #f0c39a;
   background: #35291d;
-}
-
-#save-notes:not(:disabled) {
-  box-shadow: 0 0 0 1px rgba(229, 168, 93, 0.16);
 }
 
 .workspace {
