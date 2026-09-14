@@ -8,7 +8,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <span>Canvas Notes</span>
     </div>
     <div class="toolbar-actions">
-      <span class="sync-status" id="sync-status" aria-live="polite"></span>
       <button class="toolbar-button" id="add-note" type="button" aria-label="Add note">＋</button>
       <button class="save-button" id="save-notes" type="button">Save</button>
       <button class="account-button" id="google-sign-in" type="button">Login</button>
@@ -19,6 +18,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <div class="canvas-grid" aria-hidden="true"></div>
       <div class="notes"></div>
     </div>
+    <div class="sync-status" id="sync-status" aria-live="polite"></div>
   </section>
 </main>
 `
@@ -119,10 +119,12 @@ const setDriveConnected = (connected: boolean) => {
 const setSyncStatus = (message: string, hideAfterMs = 0) => {
   window.clearTimeout(syncStatusTimer)
   syncStatus.textContent = message
+  syncStatus.classList.toggle('is-visible', Boolean(message))
   syncStatus.classList.toggle('is-unsaved', message === 'Unsaved changes')
   if (hideAfterMs > 0) {
     syncStatusTimer = window.setTimeout(() => {
       syncStatus.textContent = ''
+      syncStatus.classList.remove('is-visible')
       syncStatus.classList.remove('is-unsaved')
     }, hideAfterMs)
   }

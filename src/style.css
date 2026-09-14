@@ -154,14 +154,30 @@ button {
 }
 
 .sync-status {
-  width: 54px;
-  overflow: hidden;
-  color: #858585;
-  font-size: 11px;
-  line-height: 36px;
-  text-overflow: ellipsis;
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  max-width: calc(100% - 32px);
+  padding: 6px 10px;
+  border: 1px solid #4d4d4d;
+  border-radius: 4px;
+  color: #cccccc;
+  background: rgba(37, 37, 38, 0.94);
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
   white-space: nowrap;
-  text-align: right;
+  transform: translateY(4px);
+  transition: opacity 120ms ease, transform 120ms ease;
+  visibility: hidden;
+}
+
+.sync-status.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
 }
 
 .sync-status.is-unsaved {
@@ -173,11 +189,6 @@ button {
     gap: 8px;
     min-width: 0;
     font-size: 14px;
-  }
-
-  .toolbar-actions {
-    gap: 6px;
-    min-width: 0;
   }
 
   .account-button {
