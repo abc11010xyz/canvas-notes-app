@@ -141,66 +141,39 @@ button {
   background: #0e639c;
 }
 
-.save-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.45;
-}
-
-.account-button:hover,
-.account-button.is-signed-in {
-  border-color: #007acc;
-  color: #ffffff;
-  background: #094771;
-}
-
-.sync-status {
-  position: absolute;
-  right: 16px;
-  bottom: 16px;
-  z-index: 2;
-  max-width: calc(100% - 32px);
-  padding: 6px 10px;
-  border: 1px solid #4d4d4d;
-  border-radius: 4px;
-  color: #cccccc;
-  background: rgba(37, 37, 38, 0.94);
-  font-size: 12px;
-  line-height: 1.2;
-  opacity: 0;
-  pointer-events: none;
-  white-space: nowrap;
-  transform: translateY(4px);
-  transition: opacity 120ms ease, transform 120ms ease;
-  visibility: hidden;
-}
-
-.sync-status.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-  visibility: visible;
-}
-
-.sync-status.is-saving::before {
+.save-button.is-saving::before {
   display: inline-block;
-  width: 11px;
-  height: 11px;
-  margin-right: 6px;
+  width: 12px;
+  height: 12px;
   border: 2px solid #4d4d4d;
   border-top-color: #4fc1ff;
   border-radius: 50%;
   content: '';
   vertical-align: -2px;
-  animation: sync-spin 700ms linear infinite;
+  animation: save-spin 700ms linear infinite;
 }
 
-@keyframes sync-spin {
+.save-button:disabled {
+  cursor: pointer;
+  opacity: 0.45;
+}
+
+.save-button:disabled:hover {
+  border-color: #4d4d4d;
+  color: #cccccc;
+  background: #333333;
+}
+
+.account-button:hover {
+  border-color: #007acc;
+  color: #ffffff;
+  background: #094771;
+}
+
+@keyframes save-spin {
   to {
     transform: rotate(360deg);
   }
-}
-
-.sync-status.is-unsaved {
-  color: #4fc1ff;
 }
 
 @media (max-width: 600px) {
@@ -275,6 +248,15 @@ button {
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
 }
 
+.note:hover {
+  border-color: #6a6a6a;
+}
+
+.note.is-active {
+  border-color: #007acc;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+}
+
 .note-header {
   display: flex;
   align-items: center;
@@ -334,12 +316,16 @@ button {
   resize: none;
   border: 0;
   outline: 0;
-  color: #d4d4d4;
+  color: #858585;
   background: transparent;
   font: inherit;
   font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.5;
+}
+
+.note.is-active textarea {
+  color: #d4d4d4;
 }
 
 .note textarea::placeholder {

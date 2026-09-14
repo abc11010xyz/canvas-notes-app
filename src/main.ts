@@ -18,7 +18,6 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
       <div class="canvas-grid" aria-hidden="true"></div>
       <div class="notes"></div>
     </div>
-    <div class="sync-status" id="sync-status" aria-live="polite"></div>
   </section>
 </main>
 `
@@ -32,7 +31,6 @@ const storageKey = 'canvas-notes-state'
 const explicitLogoutKey = 'canvas-notes-explicit-logout'
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
 const signInButton = document.querySelector<HTMLButtonElement>('#google-sign-in')!
-const syncStatus = document.querySelector<HTMLElement>('#sync-status')!
 
 type SavedNote = {
   id: string
@@ -62,8 +60,9 @@ let activeCanvasPointerId: number | null = null
 let accessToken: string | null = null
 let driveConnected = false
 let driveFileId: string | null = null
-let syncStatusTimer: number | undefined
 let isDirty = false
+let isSaving = false
+let isLoading = false
 let nextNoteZIndex = 1
 
 type GoogleTokenClient = {
@@ -93,11 +92,12 @@ const updateAuthButton = () => {
   signInButton.textContent = accessToken ? 'Logout' : 'Login'
   signInButton.classList.toggle('is-signed-in', Boolean(accessToken))
   addNoteButton.disabled = !accessToken || !driveConnected
-  saveButton.disabled = !accessToken || !driveConnected || !isDirty
+  saveButton.disabled = !accessToken || !driveConnected || !isDirty || isSaving || isLoading
   saveButton.textContent = 'Save'
-  saveButton.classList.toggle('is-dirty', isDirty)
-  saveButton.title = isDirty ? 'Unsaved changes' : 'Save notes'
-  saveButton.setAttribute('aria-label', isDirty ? 'Save unsaved changes' : 'Save notes')
+  saveButton.classList.toggle('is-dirty', isDirty && !isSaving && !isLoading)
+  saveButton.classList.toggle('is-saving', isSaving || isLoading)
+  saveButton.textContent = isSaving || isLoading ? '' : 'Save'
+  saveButton.setAttribute('aria-label', isSaving ? 'Saving notes' : isLoading ? 'Loading notes' : isDirty ? 'Save unsaved changes' : 'Save notes')
 }
 
 const setEditingEnabled = (enabled: boolean) => {
@@ -116,20 +116,14 @@ const setDriveConnected = (connected: boolean) => {
   updateAuthButton()
 }
 
-const setSyncStatus = (message: string, hideAfterMs = 0) => {
-  window.clearTimeout(syncStatusTimer)
-  syncStatus.textContent = message
-  syncStatus.classList.toggle('is-visible', Boolean(message))
-  syncStatus.classList.toggle('is-saving', message === 'Saving...')
-  syncStatus.classList.toggle('is-unsaved', message === 'Unsaved changes')
-  if (hideAfterMs > 0) {
-    syncStatusTimer = window.setTimeout(() => {
-      syncStatus.textContent = ''
-      syncStatus.classList.remove('is-visible')
-      syncStatus.classList.remove('is-saving')
-      syncStatus.classList.remove('is-unsaved')
-    }, hideAfterMs)
-  }
+const setSaving = (saving: boolean) => {
+  isSaving = saving
+  updateAuthButton()
+}
+
+const setLoading = (loading: boolean) => {
+  isLoading = loading
+  updateAuthButton()
 }
 
 const requestGoogleAccessToken = (prompt?: string) => {
@@ -153,7 +147,6 @@ const requestGoogleAccessToken = (prompt?: string) => {
         updateAuthButton()
         void loadFromDrive()
       } else if (response.error && prompt !== '') {
-        setSyncStatus('Failed', 7000)
       }
     },
   })
@@ -184,7 +177,6 @@ signInButton.addEventListener('click', async () => {
     localStorage.setItem(explicitLogoutKey, 'true')
     window.google?.accounts.oauth2.revoke(token, updateAuthButton)
     updateAuthButton()
-    setSyncStatus('')
     return
   }
 
@@ -196,20 +188,17 @@ saveButton.addEventListener('click', async () => {
 
   const localState = readLocalState()
   if (!localState) {
-    setSyncStatus('Failed', 7000)
     return
   }
 
   if (await saveToDrive(localState)) {
     isDirty = false
-    setSyncStatus('Saved', 2500)
     updateAuthButton()
   }
 })
 
 updateAuthButton()
 setEditingEnabled(false)
-setSyncStatus('')
 
 window.addEventListener('load', () => {
   if (!accessToken && localStorage.getItem(explicitLogoutKey) !== 'true') {
@@ -236,6 +225,13 @@ const markUnsaved = () => {
 }
 
 workspace.addEventListener('pointerdown', (event) => {
+  if (event.button === 0 && !(event.target as HTMLElement).closest('.note')) {
+    notes.querySelectorAll<HTMLElement>('.note.is-active').forEach((activeNote) => {
+      activeNote.classList.remove('is-active')
+    })
+    notes.classList.remove('has-active-note')
+  }
+
   if (event.button !== 1) return
 
   event.preventDefault()
@@ -324,7 +320,6 @@ const saveState = () => {
       isDirty = true
       updateAuthButton()
     } catch {
-      setSyncStatus('Failed', 7000)
     }
   }
 }
@@ -369,7 +364,7 @@ const findDriveFile = async () => {
 
 const saveToDrive = async (state: SavedState) => {
   try {
-    setSyncStatus('Saving...')
+    setSaving(true)
     const fileId = await findDriveFile()
     const metadata = fileId
       ? { name: 'canvas-notes.json', mimeType: 'application/json' }
@@ -401,16 +396,17 @@ const saveToDrive = async (state: SavedState) => {
       const created = (await response.json()) as { id?: string }
       driveFileId = created.id ?? null
     }
-      setSyncStatus('Saved', 2500)
+    setSaving(false)
     return true
   } catch {
     setDriveConnected(false)
-    setSyncStatus('Failed', 7000)
+    setSaving(false)
     return false
   }
 }
 
 const loadFromDrive = async () => {
+  setLoading(true)
   try {
     const fileId = await findDriveFile()
     if (!fileId) {
@@ -428,6 +424,7 @@ const loadFromDrive = async () => {
         isDirty = false
         setDriveConnected(true)
       }
+      setLoading(false)
       return
     }
 
@@ -454,21 +451,20 @@ const loadFromDrive = async () => {
       try {
         localStorage.setItem(storageKey, JSON.stringify(state))
       } catch {
-        setSyncStatus('Failed', 7000)
       }
       isDirty = false
       setDriveConnected(true)
     }
+    setLoading(false)
   } catch {
     setDriveConnected(false)
-    setSyncStatus('Failed', 7000)
+    setLoading(false)
   }
 }
 
 window.addEventListener('offline', () => {
   if (accessToken) {
     setDriveConnected(false)
-    setSyncStatus('Failed', 7000)
   }
 })
 
@@ -507,6 +503,11 @@ const createNote = (x: number, y: number, savedNote?: SavedNote, persist = true)
 
   const deleteButton = note.querySelector<HTMLButtonElement>('.note-delete')!
   note.addEventListener('pointerdown', () => {
+    notes.querySelectorAll<HTMLElement>('.note.is-active').forEach((activeNote) => {
+      activeNote.classList.remove('is-active')
+    })
+    note.classList.add('is-active')
+    notes.classList.add('has-active-note')
     if (!driveConnected) return
     note.style.zIndex = `${nextNoteZIndex++}`
     saveState()
@@ -526,10 +527,15 @@ const createNote = (x: number, y: number, savedNote?: SavedNote, persist = true)
   const noteHeader = note.querySelector<HTMLElement>('.note-header')!
 
   noteHeader.addEventListener('pointerdown', (event) => {
-    if (!driveConnected) return
     if (event.button !== 0) return
     if ((event.target as HTMLElement).closest('button')) return
 
+    notes.querySelectorAll<HTMLElement>('.note.is-active').forEach((activeNote) => {
+      activeNote.classList.remove('is-active')
+    })
+    note.classList.add('is-active')
+    notes.classList.add('has-active-note')
+    if (!driveConnected) return
     event.stopPropagation()
     event.preventDefault()
     note.style.zIndex = `${nextNoteZIndex++}`
