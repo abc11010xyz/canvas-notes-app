@@ -157,16 +157,28 @@ button {
     padding: 0 12px;
   }
 
-  .brand > span:last-child {
-    display: none;
+  .brand {
+    gap: 7px;
+    min-width: 0;
+    font-size: 13px;
   }
 
   .toolbar-actions {
     gap: 4px;
+    min-width: 0;
   }
 
   .sync-status {
-    width: 110px;
+    width: 78px;
+  }
+
+  .save-button {
+    padding: 0 8px;
+  }
+
+  .account-button {
+    width: 64px;
+    padding: 0 6px;
   }
 }
 
