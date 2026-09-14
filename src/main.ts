@@ -301,6 +301,7 @@ const saveState = () => {
       localStorage.setItem(storageKey, JSON.stringify(state))
       isDirty = true
       updateAuthButton()
+      setSyncStatus('Unsaved changes')
     } catch {
       setSyncStatus('Failed', 7000)
     }
