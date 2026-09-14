@@ -108,6 +108,27 @@ button {
   font-size: 12px;
 }
 
+.save-button {
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #4a3d2e;
+  border-radius: 6px;
+  color: #e5a85d;
+  background: #35291d;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.save-button:hover {
+  border-color: #6a5238;
+  color: #f0c39a;
+}
+
+.save-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
 .account-button:hover,
 .account-button.is-signed-in {
   border-color: #6a5238;

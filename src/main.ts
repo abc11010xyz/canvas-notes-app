@@ -10,6 +10,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <div class="toolbar-actions">
       <span class="sync-status" id="sync-status" aria-live="polite"></span>
       <button class="toolbar-button" id="add-note" type="button" aria-label="Add note">＋</button>
+      <button class="save-button" id="save-notes" type="button">Save</button>
       <button class="account-button" id="google-sign-in" type="button">Login</button>
     </div>
   </header>
@@ -26,6 +27,7 @@ const workspace = document.querySelector<HTMLElement>('.workspace')!
 const canvasContent = document.querySelector<HTMLElement>('.canvas-content')!
 const notes = document.querySelector<HTMLElement>('.notes')!
 const addNoteButton = document.querySelector<HTMLButtonElement>('#add-note')!
+const saveButton = document.querySelector<HTMLButtonElement>('#save-notes')!
 const storageKey = 'canvas-notes-state'
 const explicitLogoutKey = 'canvas-notes-explicit-logout'
 const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
@@ -59,8 +61,8 @@ let activeCanvasPointerId: number | null = null
 let accessToken: string | null = null
 let driveConnected = false
 let driveFileId: string | null = null
-let driveSaveTimer: number | undefined
 let syncStatusTimer: number | undefined
+let isDirty = false
 let nextNoteZIndex = 1
 
 type GoogleTokenClient = {
@@ -90,6 +92,7 @@ const updateAuthButton = () => {
   signInButton.textContent = accessToken ? 'Logout' : 'Login'
   signInButton.classList.toggle('is-signed-in', Boolean(accessToken))
   addNoteButton.disabled = !accessToken || !driveConnected
+  saveButton.disabled = !accessToken || !driveConnected || !isDirty
 }
 
 const setEditingEnabled = (enabled: boolean) => {
@@ -149,10 +152,15 @@ const requestGoogleAccessToken = (prompt?: string) => {
 
 signInButton.addEventListener('click', async () => {
   if (accessToken) {
-    window.clearTimeout(driveSaveTimer)
-    const localState = readLocalState()
-    if (localState && !(await saveToDrive(localState))) {
-      return
+    if (isDirty) {
+      const shouldSave = window.confirm('You have unsaved changes. Save before logging out?')
+      if (shouldSave) {
+        const localState = readLocalState()
+        if (!localState || !(await saveToDrive(localState))) return
+        isDirty = false
+      } else if (!window.confirm('Discard unsaved changes and log out?')) {
+        return
+      }
     }
 
     const token = accessToken
@@ -161,6 +169,7 @@ signInButton.addEventListener('click', async () => {
     driveFileId = null
     notes.replaceChildren()
     localStorage.removeItem(storageKey)
+    isDirty = false
     localStorage.setItem(explicitLogoutKey, 'true')
     window.google?.accounts.oauth2.revoke(token, updateAuthButton)
     updateAuthButton()
@@ -171,6 +180,21 @@ signInButton.addEventListener('click', async () => {
   requestGoogleAccessToken()
 })
 
+saveButton.addEventListener('click', async () => {
+  if (!accessToken || !driveConnected || !isDirty) return
+
+  const localState = readLocalState()
+  if (!localState) {
+    setSyncStatus('Failed', 7000)
+    return
+  }
+
+  if (await saveToDrive(localState)) {
+    isDirty = false
+    updateAuthButton()
+  }
+})
+
 updateAuthButton()
 setEditingEnabled(false)
 setSyncStatus('')
@@ -179,6 +203,13 @@ window.addEventListener('load', () => {
   if (!accessToken && localStorage.getItem(explicitLogoutKey) !== 'true') {
     requestGoogleAccessToken('')
   }
+})
+
+window.addEventListener('beforeunload', (event) => {
+  if (!isDirty) return
+
+  event.preventDefault()
+  event.returnValue = ''
 })
 
 const updateCanvasPosition = () => {
@@ -268,16 +299,11 @@ const saveState = () => {
   if (accessToken) {
     try {
       localStorage.setItem(storageKey, JSON.stringify(state))
+      isDirty = true
+      updateAuthButton()
     } catch {
       setSyncStatus('Failed', 7000)
     }
-  }
-
-  if (accessToken) {
-    window.clearTimeout(driveSaveTimer)
-    driveSaveTimer = window.setTimeout(() => {
-      void saveToDrive(state)
-    }, 700)
   }
 }
 
@@ -374,8 +400,11 @@ const loadFromDrive = async () => {
         zoom = Number.isFinite(localState.zoom) ? Math.min(3, Math.max(0.35, localState.zoom)) : 1
         updateCanvasPosition()
         localState.notes?.forEach((savedNote) => createNote(savedNote.x, savedNote.y, savedNote, false))
-        if (await saveToDrive(localState)) setDriveConnected(true)
+        isDirty = true
+        setDriveConnected(true)
+        setSyncStatus('Unsaved changes')
       } else {
+        isDirty = false
         setDriveConnected(true)
       }
       return
@@ -398,13 +427,16 @@ const loadFromDrive = async () => {
     stateToUse.notes?.forEach((savedNote) => createNote(savedNote.x, savedNote.y, savedNote, false))
 
     if (stateToUse === localState) {
-      if (await saveToDrive(stateToUse)) setDriveConnected(true)
+      isDirty = true
+      setDriveConnected(true)
+      setSyncStatus('Unsaved changes')
     } else {
       try {
         localStorage.setItem(storageKey, JSON.stringify(state))
       } catch {
         setSyncStatus('Failed', 7000)
       }
+      isDirty = false
       setDriveConnected(true)
     }
   } catch {
