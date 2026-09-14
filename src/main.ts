@@ -114,9 +114,11 @@ const setDriveConnected = (connected: boolean) => {
 const setSyncStatus = (message: string, hideAfterMs = 0) => {
   window.clearTimeout(syncStatusTimer)
   syncStatus.textContent = message
+  syncStatus.classList.toggle('is-unsaved', message === 'Unsaved changes')
   if (hideAfterMs > 0) {
     syncStatusTimer = window.setTimeout(() => {
       syncStatus.textContent = ''
+      syncStatus.classList.remove('is-unsaved')
     }, hideAfterMs)
   }
 }
@@ -191,6 +193,7 @@ saveButton.addEventListener('click', async () => {
 
   if (await saveToDrive(localState)) {
     isDirty = false
+    setSyncStatus('Saved', 2500)
     updateAuthButton()
   }
 })
