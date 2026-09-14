@@ -41,6 +41,7 @@ type SavedNote = {
   y: number
   width: number
   height: number
+  zIndex?: number
 }
 
 type SavedState = {
@@ -301,6 +302,7 @@ const saveState = () => {
     y: Number.parseFloat(note.style.top),
     width: note.offsetWidth,
     height: note.offsetHeight,
+    zIndex: Number.parseInt(note.style.zIndex, 10),
   }))
 
   const state: SavedState = {
@@ -475,7 +477,9 @@ const createNote = (x: number, y: number, savedNote?: SavedNote, persist = true)
   const note = document.createElement('article')
   note.className = 'note'
   note.dataset.id = savedNote?.id ?? crypto.randomUUID()
-  note.style.zIndex = `${nextNoteZIndex++}`
+  const zIndex = savedNote?.zIndex && savedNote.zIndex > 0 ? savedNote.zIndex : nextNoteZIndex
+  note.style.zIndex = `${zIndex}`
+  nextNoteZIndex = Math.max(nextNoteZIndex, zIndex + 1)
   note.style.left = `${x}px`
   note.style.top = `${y}px`
   if (savedNote) {
@@ -500,7 +504,9 @@ const createNote = (x: number, y: number, savedNote?: SavedNote, persist = true)
 
   const deleteButton = note.querySelector<HTMLButtonElement>('.note-delete')!
   note.addEventListener('pointerdown', () => {
+    if (!driveConnected) return
     note.style.zIndex = `${nextNoteZIndex++}`
+    saveState()
   })
 
   deleteButton.addEventListener('click', () => {
