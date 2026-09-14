@@ -1,7 +1,7 @@
 :root {
   font-family: 'Segoe UI', system-ui, sans-serif;
-  color: #e8eaf0;
-  background: #111318;
+  color: #cccccc;
+  background: #1e1e1e;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -27,7 +27,7 @@ button {
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  background: #111318;
+  background: #1e1e1e;
 }
 
 .toolbar {
@@ -36,8 +36,8 @@ button {
   justify-content: space-between;
   height: 58px;
   padding: 0 18px;
-  border-bottom: 1px solid #292d36;
-  background: #181a20;
+  border-bottom: 1px solid #333333;
+  background: #252526;
 }
 
 .brand,
@@ -48,7 +48,7 @@ button {
 
 .brand {
   gap: 10px;
-  color: #f2f3f6;
+  color: #cccccc;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 0.2px;
@@ -58,8 +58,8 @@ button {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #e5a85d;
-  box-shadow: 0 0 14px rgba(229, 168, 93, 0.45);
+  background: #007acc;
+  box-shadow: 0 0 14px rgba(0, 122, 204, 0.4);
 }
 
 .toolbar-actions {
@@ -74,15 +74,15 @@ button {
   place-items: center;
   border: 1px solid transparent;
   border-radius: 6px;
-  color: #a8adb9;
+  color: #858585;
   background: transparent;
   cursor: pointer;
 }
 
 .toolbar-button:hover {
-  border-color: #3a3f4b;
-  color: #f2f3f6;
-  background: #242730;
+  border-color: #4d4d4d;
+  color: #ffffff;
+  background: #2a2d2e;
 }
 
 .toolbar-button:disabled {
@@ -92,7 +92,7 @@ button {
 
 .toolbar-button:disabled:hover {
   border-color: transparent;
-  color: #a8adb9;
+  color: #858585;
   background: transparent;
 }
 
@@ -100,10 +100,10 @@ button {
   height: 36px;
   width: 76px;
   padding: 0 10px;
-  border: 1px solid #3a3f4b;
-  border-radius: 6px;
-  color: #c5c9d3;
-  background: #20232a;
+  border: 1px solid #4d4d4d;
+  border-radius: 3px;
+  color: #cccccc;
+  background: #333333;
   cursor: pointer;
   font-size: 12px;
 }
@@ -111,17 +111,18 @@ button {
 .save-button {
   height: 36px;
   padding: 0 12px;
-  border: 1px solid #4a3d2e;
-  border-radius: 6px;
-  color: #e5a85d;
-  background: #35291d;
+  border: 1px solid #4d4d4d;
+  border-radius: 3px;
+  color: #cccccc;
+  background: #333333;
   cursor: pointer;
   font-size: 12px;
 }
 
 .save-button:hover {
-  border-color: #6a5238;
-  color: #f0c39a;
+  border-color: #007acc;
+  color: #ffffff;
+  background: #094771;
 }
 
 .save-button:disabled {
@@ -131,15 +132,15 @@ button {
 
 .account-button:hover,
 .account-button.is-signed-in {
-  border-color: #6a5238;
-  color: #f0c39a;
-  background: #35291d;
+  border-color: #007acc;
+  color: #ffffff;
+  background: #094771;
 }
 
 .sync-status {
   width: 145px;
   overflow: hidden;
-  color: #858b99;
+  color: #858585;
   font-size: 11px;
   line-height: 36px;
   text-overflow: ellipsis;
@@ -148,7 +149,7 @@ button {
 }
 
 .sync-status.is-unsaved {
-  color: #e5a85d;
+  color: #4fc1ff;
 }
 
 @media (max-width: 600px) {
@@ -172,30 +173,30 @@ button {
 #add-note {
   width: 36px;
   height: 36px;
-  border-color: #4a3d2e;
-  border-radius: 8px;
-  color: #e5a85d;
-  background: #35291d;
+  border-color: #4d4d4d;
+  border-radius: 4px;
+  color: #4fc1ff;
+  background: #333333;
   font-size: 20px;
   line-height: 1;
   padding-bottom: 2px;
 }
 
 #add-note:hover {
-  border-color: #6a5238;
-  color: #f0c39a;
-  background: #35291d;
+  border-color: #007acc;
+  color: #ffffff;
+  background: #094771;
 }
 
 #save-notes:not(:disabled) {
-  box-shadow: 0 0 0 1px rgba(229, 168, 93, 0.16);
+  box-shadow: 0 0 0 1px rgba(0, 122, 204, 0.25);
 }
 
 .workspace {
   position: relative;
   flex: 1;
   overflow: hidden;
-  background: #111318;
+  background: #1e1e1e;
   cursor: grab;
   touch-action: none;
 }
@@ -222,9 +223,9 @@ button {
   width: 220px;
   height: 150px;
   overflow: hidden;
-  border: 1px solid #4a4033;
-  border-radius: 8px;
-  background: #29251f;
+  border: 1px solid #4d4d4d;
+  border-radius: 4px;
+  background: #252526;
   box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
 }
 
@@ -234,8 +235,8 @@ button {
   justify-content: space-between;
   height: 30px;
   padding: 0 8px;
-  border-bottom: 1px solid #40382f;
-  color: #9d8b75;
+  border-bottom: 1px solid #333333;
+  color: #858585;
   cursor: grab;
   user-select: none;
 }
@@ -255,7 +256,7 @@ button {
   padding: 0;
   border: 0;
   border-radius: 4px;
-  color: #a99f93;
+  color: #858585;
   background: transparent;
   cursor: pointer;
   font-size: 18px;
@@ -263,8 +264,8 @@ button {
 }
 
 .note-delete:hover {
-  color: #f0c39a;
-  background: #413329;
+  color: #ffffff;
+  background: #094771;
 }
 
 .note-delete:disabled {
@@ -287,7 +288,7 @@ button {
   resize: none;
   border: 0;
   outline: 0;
-  color: #eee5d8;
+  color: #d4d4d4;
   background: transparent;
   font: inherit;
   font-family: Consolas, 'Cascadia Mono', 'Courier New', monospace;
@@ -296,7 +297,7 @@ button {
 }
 
 .note textarea::placeholder {
-  color: #9d917f;
+  color: #858585;
 }
 
 .note textarea:disabled {
@@ -378,8 +379,8 @@ button {
   position: absolute;
   inset: 0;
   opacity: 0.5;
-  background-image: linear-gradient(#292d36 1px, transparent 1px),
-    linear-gradient(90deg, #292d36 1px, transparent 1px);
+  background-image: linear-gradient(#2d2d30 1px, transparent 1px),
+    linear-gradient(90deg, #2d2d30 1px, transparent 1px);
   background-position: center;
   background-size: 36px 36px;
   mask-image: radial-gradient(ellipse at center, black, transparent 75%);
